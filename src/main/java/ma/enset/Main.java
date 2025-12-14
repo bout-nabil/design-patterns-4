@@ -1,17 +1,39 @@
 package ma.enset;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Scanner;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws Exception {
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Nom du filtre : ");
+        String filterClassName = sc.nextLine();
+
+        System.out.print("Nom de la compression : ");
+        String compressionClassName = sc.nextLine();
+
+        FilterStrategy filter =
+                (FilterStrategy) Class.forName(filterClassName)
+                        .getDeclaredConstructor()
+                        .newInstance();
+
+        CompressionTemplate compression =
+                (CompressionTemplate) Class.forName(compressionClassName)
+                        .getDeclaredConstructor()
+                        .newInstance();
+
+        ImageProcessor processor = new ImageProcessor();
+        processor.setFilter(filter);
+        processor.setCompression(compression);
+
+        int[] image = {10, 20, 30, 40};
+
+        int[] result = processor.process(image);
+
+        System.out.println("Traitement terminé !");
     }
 }
